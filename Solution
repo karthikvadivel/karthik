@@ -1,0 +1,358 @@
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+
+/*
+ * A. Let’s start with the basics
+ *
+ *Given the following code...
+ */
+
+//Question A
+
+class Animal {
+	void walk() {
+		System.out.println("I am walking");
+	}
+}
+
+class Bird extends Animal {
+	void fly() {
+		System.out.println("I am flying");
+	}
+	
+//1.
+	String sing(){
+		String aStr = "I am singing";
+		return aStr;
+	}
+}
+
+//2.
+class Duck extends Bird {
+	String swim(){
+		String aStr = "I am swimming";
+		return aStr;
+	}
+
+	@Override
+	String sing(){
+		String aStr = "Quack, quack";
+		return aStr;
+	}
+}
+
+class Chicken extends Animal {
+	String sing(){
+		String aStr = "Cluck, cluck";
+		return aStr;
+	}
+
+}
+
+//3.
+class Rooster{
+	Chicken aChic=new Chicken();
+
+	void walk(){
+		aChic.walk();
+
+	}
+
+	String sing(){
+		String aStr="Cock-a-doodle-doo";
+		return aStr;
+	}
+
+}
+
+interface Thing {
+	public String sound();
+}
+
+class Parrot{
+
+	String sing(Thing thing){
+		return thing.sound();
+	}
+}
+
+class Dog implements Thing{
+
+	public String sound(){
+		String aStr = "Woof, woof";
+		return aStr;
+	}
+}
+
+class Cat implements Thing{
+	public String sound(){
+		String aStr = "Meow";
+		return aStr;
+	}
+}
+
+class RoosterNeighobour extends Rooster implements Thing {
+	public String sound(){
+		return sing();
+	}
+}
+
+
+//Question B
+// 1.
+	class Fish{
+		protected String size;
+		protected String color;
+
+		String swim(){
+			String aStr = "I am swimming";
+			return aStr;
+		}
+		boolean canWalk(){
+			return false;   // Fish cannot walk.
+		}
+		boolean canSing(){
+			return false;   // Fish cannot sing.
+		}
+
+	}
+	
+// 2. 
+		class Shark extends Fish{
+			Shark(){
+				super.size="large";
+				super.color="grey";
+			}
+
+
+			void eat(){
+				System.out.println("Shark eats others fishes !! ");
+			}
+		}
+
+		class Clownfish extends Fish{
+			Clownfish(){
+				super.size="small";
+				super.color="orange";
+			}
+
+			void joke(){
+				System.out.println("Clownfish makes joke !! ");
+			}
+
+		}
+	
+// 3.
+		class Dolphin {
+			Fish aFish= new Fish();
+
+			void swim(){
+				aFish.swim();
+			}
+
+		}
+
+//Question D
+// 
+		abstract class ButterflyLifeCycle{
+
+			abstract boolean canFly();
+			abstract boolean canWalk();
+		}
+//1.
+		class Butterfly extends ButterflyLifeCycle{
+
+			boolean canFly(){
+				return true;
+			}
+
+
+			boolean canWalk(){
+				return false;   //butterfly cannot walk.
+			}
+			
+			boolean canSing(){
+				return false;   //butterfly cannot sing.
+			}
+			
+		}
+		
+// 2.	
+		class Caterpillar extends ButterflyLifeCycle{
+
+			boolean canWalk(){
+				return true;
+			}
+
+
+			boolean canFly(){
+				return false;  //Caterpillar cannot fly.
+			}
+
+		}
+
+
+public class Solution {
+	public static void main(String[] args) {
+		Bird bird = new Bird();
+		bird.walk();
+		bird.fly();
+		bird.sing();
+
+
+//Question A 4. continued
+		Parrot aParrot = new Parrot();
+		System.out.println(aParrot.sing(new Dog()));	//a parrot stays with dogs at home
+		System.out.println(aParrot.sing(new Cat()));	//a parrot stays with cat at home
+		System.out.println(aParrot.sing(new RoosterNeighobour())); //a prrot stays with rooster on farm
+
+
+	}
+	
+	
+//Question E 
+//	Counting animals
+			void count() {
+
+				int numOfFlyAnimals=0;
+				int numOfWalkAnimals=0;
+				int numOfSingAnimals=0;
+				int numOfSwimAnimals=0;
+
+				Object[] animals = new Object[] {
+					new Bird(),
+					new Duck(),
+					new Chicken(),
+					new Rooster(),
+					new Parrot(),
+					new Fish(),
+					new Shark(),
+					new Dolphin(),
+					new Dog(),
+					new Cat(),
+					new Butterfly(),
+					new Clownfish(),
+					new Dolphin()
+			
+				};
+
+			  for (Object obj: animals) {
+
+				  if (obj instanceof Animal) {
+					  numOfWalkAnimals++;
+				  }
+
+				  if (obj instanceof Bird) {
+					  numOfFlyAnimals++;
+				  }
+
+				  if ((obj instanceof Bird) || (obj instanceof Chicken) || (obj instanceof Rooster))  {
+					  numOfSingAnimals++;
+				  }
+
+				  if ((obj instanceof Fish) || (obj instanceof Duck) || (obj instanceof Dolphin) || obj instanceof Clownfish)  {
+					  numOfSwimAnimals ++;
+				  }
+
+			  }
+
+
+
+			}
+			
+//Bonus 
+//question 1.
+//rooster is a chicken
+			class RoosterInternational{
+
+				Locale englishLocale = new Locale("en", "us");
+		        ResourceBundle engMessages = ResourceBundle.getBundle("MessagesBundle", englishLocale);
+
+				Locale frenchLocale = new Locale("Fr", "FR");
+		        ResourceBundle frenchMessages = ResourceBundle.getBundle("MessagesBundle", englishLocale);
+
+
+				Chicken aChic=new Chicken();
+
+				void walk(){
+					aChic.walk();
+
+				}
+
+				void sing(){
+
+					System.out.println(engMessages.getString("singText")); // in english
+					System.out.println(frenchMessages.getString("singText")); // in French
+				}
+
+			}
+
+
+}
+
+//RESTful API for querying these animals
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import com.eclipsesource.json.Json;
+import com.eclipsesource.json.JsonValue;
+
+public class AnimalRestAPI {
+	
+	public static void main(String args[]) throws IOException{
+		
+		HttpURLConnection connection = null;
+		BufferedReader br = null;
+		
+		String qry="http://localhost:8080/animal/";
+		URL url;
+		try {
+			url = new URL(qry);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			//connection.setRequestProperty("Authorization", "Basic ",authStringEnc ); /String authStringEnc = Base64.getEncoder().encodeToString(authString.getBytes());
+			connection.setRequestProperty("Content-Type", "appilication/json" );
+			connection.setRequestProperty("Accept", "application/json");
+			connection.connect();
+		if (connection !=null) {
+			br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			JsonValue value = Json.parse(br);
+			//System.out.println(value);
+			if (value.isArray()){
+				for(int i=0; i < value.asArray().size(); i++){
+				System.out.println(value.asArray().get(i));
+				}
+			}
+		}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} finally {
+			
+			if(br != null){
+				br.close();
+			}
+			if(connection != null){
+				connection.disconnect();
+			}
+		}
+		
+		
+	
+	}
+		
+}
+
+query output :
+
+{"animalName":"animal","canWalk":"I am walking","canSing":"cannot singing","canFly":"cannot flying","canSwim":"cannot swimming"}
+{"animalName":"bird","canWalk":"I am walking","canSing":"cannot singing","canFly":"I am flying","canSwim":"I am swimming"}
+{"animalName":"fish","canWalk":"cannot walking","canSing":"cannot singing","canFly":"cannot flying","canSwim":"I am swimming"}
+{"animalName":"duck","canWalk":"I am walking","canSing":"cannot singing","canFly":"cannot flying","canSwim":"I am swimming"}
+
+
